@@ -10,8 +10,9 @@ public class AutomonosAgent : AIAgent
     public Perception flockPerception;
 
      float angle;
-    void Update()
+    void Update() 
     {
+        transform.position=Utilities.Wrap(transform.position,new Vector3(-15,-15,-15), new Vector3(15,15,15));   
         //movement.ApplyForce(Vector3.forward * 10);
 
         //Debug.DrawRay(transform.position,transform.forward * perception.maxDistance,Color.green);
@@ -53,10 +54,13 @@ public class AutomonosAgent : AIAgent
                 
             }
         }
-        //wander
+        //wander 
+        print(movement.Acceleration.sqrMagnitude);
         if(movement.Acceleration.sqrMagnitude == 0)
         {
+            print("wandering");
             Vector3 force = Wander();
+            print(force);
             movement.ApplyForce(force);
         }
 
@@ -114,7 +118,7 @@ public class AutomonosAgent : AIAgent
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.up);
         Vector3 point = rotation * (Vector3.forward * data.radius);
 
-        Vector3 forward = movement.Direction * data.distance;
+        Vector3 forward = transform.forward + movement.Direction;
         Vector3 force = GetSteeringForce(forward + point);
         return force;
     }
